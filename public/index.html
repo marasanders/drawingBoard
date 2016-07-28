@@ -10,5 +10,54 @@
   </head>
   <body>
     <canvas id="drawing"></canvas>
+    <!-- Message List  -->
+    <ul id="messages"></ul>
+
+    <!-- New Message  -->
+    <form id="new-message" action="">
+      <input id="message" autocomplete="off" />
+      <button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script class = "message">
+     // Initialize client socket
+      var socket = io();
+      // Cache reference to elements
+      var els = {
+        input: document.getElementById('message'),
+        form:  document.getElementById('new-message'),
+        list:  document.getElementById('messages')
+      }
+      // When a user enters a new message...
+      els.form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        // Broadcast event to server, pass along data
+        socket.emit('chat message', els.input.value);
+        els.input.value = "";
+        return false
+      })
+      // When the server sends back the new message...
+      socket.on('chat message', function(msg){
+        // Display the message to the user
+        var newMessage = document.createElement("li");
+        newMessage.innerText = msg;
+        var canvas = document.getElementById("drawing")
+        var context = canvas.getContext('2d');
+        if (newMessage.innerText == "white" || newMessage.innerText == "yellow" || newMessage.innerText == "black"){
+          context.strokeStyle=newMessage.innerText;
+          context.lineWidth=5
+        }
+        if (newMessage.innerText == "fatter"){
+          context.lineWidth=5
+        }
+        if (newMessage.innerText == "thinner"){
+          context.lineWidth=2
+        }
+        if (newMessage.innerText !== "thinner" && newMessage.innerText !== "white"&& newMessage.innerText !== "yellow"&& newMessage.innerText !== "black"&& newMessage.innerText !== "fatter"){
+          els.list.appendChild(newMessage);
+        }
+      });
+    </script>
   </body>
 </html>

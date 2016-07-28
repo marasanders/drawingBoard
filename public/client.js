@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     pos_prev: false
   };
 //get canvas element and create context
+
 var canvas = document.getElementById('drawing');
 var context = canvas.getContext('2d');
 var width = window.innerWidth;
